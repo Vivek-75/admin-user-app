@@ -3,9 +3,11 @@ import { Typography, Box } from "@mui/material"
 import UserWidget from "../components/UserWidget"
 import { useGetUsersMutation } from "../services/api"
 import { IUser } from "../interface"
+import { useAppSelector } from "../store/store"
 
 export default function Users() {
 
+  const adminId = useAppSelector(state => state.users._id)
   const [data, setData] = useState<IUser[]>([])
   const [getUsers] = useGetUsersMutation()
   const [reload, setReload] = useState<boolean>(false)
@@ -13,7 +15,7 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await getUsers()
+      const { data, error } = await getUsers(adminId)
       if (error)
         throw new Error()
       setData(data)

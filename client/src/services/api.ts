@@ -50,9 +50,9 @@ export const api = createApi({
     }),
     
     //application
-    getUsers: builder.mutation<IUser[], void>({
-      query: () => ({
-        url: '/user/all',
+    getUsers: builder.mutation<IUser[], string>({
+      query: (adminId) => ({
+        url: `/user/${adminId}`,
         credentials: "include"
       })
     }),
@@ -108,8 +108,13 @@ export const api = createApi({
         method: 'POST',
         credentials: "include"
       })
-    })
-
+    }),
+    getPendingUsers: builder.mutation<IUser[], string>({
+      query: (adminId) => ({
+        url: `/admin/pendingusers/${adminId}`,
+        credentials: "include"
+      })
+    }),
   }),
 })
 
@@ -126,5 +131,6 @@ export const {useRegisterMutation,
   useCreateUserAndInviteMutation,
   useInviteSetPasswordMutation,
   useReInviteMutation,
+  useGetPendingUsersMutation,
   } = api
 // export const { useGetTodoQuery, useGetToDoByIdQuery, useLazyGetToDoByIdQuery, useGetToDosQuery, useCreateTodoMutation } = api

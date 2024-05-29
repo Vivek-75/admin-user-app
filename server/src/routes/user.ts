@@ -4,7 +4,7 @@ import { verifyAdmin } from '../middleware/verifyAdmin'
 
 const router = express.Router()
 
-router.get('/all', verifyAdmin, getUsers)
+router.get('/:adminId', verifyAdmin, getUsers)
 
 router.post('/updatepassword', updatePassword)
 router.post('/verifyemail', verifyEmail)

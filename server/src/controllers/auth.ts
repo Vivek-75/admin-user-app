@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import User from '../model/User';
 import { IUser } from '../interface';
+import Admin from '../model/Admin';
 
 dotenv.config()
 
@@ -12,15 +13,17 @@ export const register = async (req: Request, res: Response) => {
     const {name, email, password, isAdmin}:IUser = req.body
     
     const user = await User.findOne({email})
-    if(user)  return res.status(409).json({message: 'User already exists'})
+    if(user)  return res.status(409).json({message: 'Email registered as user'})
+
+    const admin = await Admin.findOne({email})
+    if(admin)  return res.status(409).json({message: 'Admin already exists'})
     
     const salt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, salt)
-    const newUser = new User ({
+    const newUser = new Admin ({
       name,
       email,
       password:  hashedPassword,
-      isAdmin,
     })
     const savedUser = await newUser.save()
     savedUser.password = ''
@@ -49,10 +52,9 @@ export const register = async (req: Request, res: Response) => {
 
 export async function login (req: Request, res: Response){
   try{
-    const {email, password}: IUser = req.body
+    const {email, password, isAdmin}: IUser = req.body
     console.log('login');
-    
-    const user = await User.findOne({email})
+    const user = await (isAdmin ? Admin.findOne({email}) : User.findOne({email}))
     if(!user) return res.status(404).json({message: 'user not found'})
     
     if(user.password){

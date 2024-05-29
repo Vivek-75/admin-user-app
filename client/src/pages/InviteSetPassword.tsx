@@ -20,6 +20,7 @@ export default function InviteSetPassword() {
 
     const { data, error } = await inviteSetPassword(sendData)
     console.log(data, error);
+    setPassword('')
   }
 
   return (

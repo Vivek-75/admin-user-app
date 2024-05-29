@@ -12,7 +12,8 @@ import { IUser } from "../interface";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required")
+  password: yup.string().required("required"),
+  isAdmin: yup.boolean()
 });
 
 const registerSchema = yup.object().shape({
@@ -24,12 +25,12 @@ const registerSchema = yup.object().shape({
 
 const initialLoginValue: IUser = {
   email: "",
-  password: ""
+  password: "",
+  isAdmin: true,
 }
 
 const initialRegisterValue: IUser = {
   name: '',
-  isAdmin: false,
   ...initialLoginValue
 }
 
@@ -50,7 +51,8 @@ export default function Form() {
     try {
       const userData: IUser = {
         email: values.email,
-        password: values.password
+        password: values.password,
+        isAdmin: values.isAdmin,
       }
       const { data, error } = await login(userData)
 
@@ -163,9 +165,7 @@ export default function Form() {
                 sx={{ gridColumn: "span 4" }}
               />
 
-              {!isLogin && (
-                <FormControlLabel onChange={() => {values.isAdmin = !values.isAdmin}} control={<Checkbox />} label="Admin" />
-              )}
+              <FormControlLabel onChange={() => {values.isAdmin = !values.isAdmin}} control={<Checkbox defaultChecked/>} label="Admin" />
             </Box>
 
             {/* BUTTON */}

@@ -11,6 +11,7 @@ export interface IUser {
   email : string;
   password? : string;
   isAdmin?: boolean;
+  adminId?: string;
   disabled?: boolean;
   __v?: number;
 }
@@ -19,6 +20,7 @@ export interface IUserWidget {
   _id: string,
   name: string,
   email: string,
-  disabled: boolean,
-  setReload: Dispatch<SetStateAction<boolean>>
+  disabled?: boolean,
+  // reload?: boolean,
+  setReload?: Dispatch<SetStateAction<boolean>>
 }
