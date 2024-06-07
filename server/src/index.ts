@@ -8,6 +8,7 @@ import mongoose from 'mongoose'
 import authRoutes from './routes/auth'
 import adminRoutes from './routes/admin'
 import userRoutes from './routes/user'
+import chatRoutes from './routes/chat'
 import { verifyAuth } from './middleware/verifyAuth'
 import { sendEmail } from './services/nodemailer'
 
@@ -49,6 +50,7 @@ app.use('/auth', authRoutes)
 app.post('/verifyAuth', verifyAuth)
 app.use('/admin', adminRoutes)
 app.use('/user', userRoutes)
+app.use('/chat', chatRoutes)
 
 
 app.listen(8080, ()=>{

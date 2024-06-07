@@ -13,6 +13,8 @@ import ForgetPassword from './pages/newPassword/ForgetPassword'
 import Invite from './pages/Invite'
 import Users from './pages/Users'
 import InviteSetPassword from './pages/InviteSetPassword'
+import AdminChatList from './pages/AdminChatList'
+import ChatPage from './pages/ChatPage'
 
 
 function App() {
@@ -46,7 +48,7 @@ function App() {
   
   return (
     <BrowserRouter>
-        <CssBaseline />
+      <CssBaseline />
       {isAuth &&<> <Navbar /> </>}
       <Routes>
         <Route path='/login' element={isAuth ? <Navigate to='/' /> : <Login />} />
@@ -57,6 +59,8 @@ function App() {
         <Route path='/forgotpassword/:id' element={<NewPassword />} />
         <Route path='/resetpassword/:id' element={<NewPassword />} />
         <Route path='/invite/setpassword/:id' element={<InviteSetPassword />} />
+        <Route path='/chat' element={isAdmin ? <AdminChatList /> : <Navigate to='/' /> } />
+        <Route path='/chat/:id' element={isAuth ? <ChatPage /> : <Navigate to='/' /> } />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>

@@ -8,6 +8,22 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
+export const getAllUsers = async (req: Request, res: Response) => {
+  try{
+    const {adminId} = req.params
+    console.log('getuesrs', adminId);
+    
+    const user = await User.find({adminId: adminId}).select('-password')
+    res.status(200).send(user)
+  }
+  catch{
+    (err:unknown) => {
+      console.log(err)
+      res.status(500).send('error in fetching user')
+    }
+  }
+}
+
 export const getUsers = async (req: Request, res: Response) => {
   const userPerPage = 3;
   try{
@@ -97,5 +113,26 @@ export const updatePassword = async (req: Request, res: Response) => {
       console.log(err)
       res.status(500).send('error in password update')
     }
+  }
+}
+
+
+export const getAdminId = async (req:Request, res:Response) => {
+  try{
+    const {userId} = req.body
+    console.log('USER ID', userId);
+    
+    const user = await User.findById(userId)
+
+    console.log('get admin id' , userId);
+
+    if(!user)
+      return res.status(404).json({message: 'user not found'})
+
+    res.status(200).send(user.adminId)
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).json({message: err})
   }
 }

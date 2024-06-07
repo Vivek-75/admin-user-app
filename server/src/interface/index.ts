@@ -32,3 +32,13 @@ export interface IInvitedUser {
   email: string
   adminId: string
 }
+
+export interface IChat {
+  _id?: string,
+  __v?: number,
+  senderId: string,
+  receiverId: string,
+  message: string,
+  createdAt: string,
+  updatedAt: string,
+}

@@ -18,6 +18,16 @@ interface IPage {
   page: number
 }
 
+interface IUserId {
+  userId: string
+}
+
+export interface IChat {
+  senderId: string,
+  receiverId: string,
+  text?: string
+}
+
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: backendUrl }),
@@ -59,6 +69,19 @@ export const api = createApi({
       query: ({adminId, page}) => ({
         url: `/user/${adminId}?page=${page}`,
         credentials: "include"
+      })
+    }),
+    getAllUsers: builder.mutation<IUser[], string>({
+      query: (adminId) => ({
+        url: `/user/all/${adminId}`,
+        credentials: "include"
+      })
+    }),  
+    getAdminId: builder.mutation<string, IUserId>({
+      query: (userId) => ({
+        url: `/user/adminId`,
+        method: 'POST',
+        body: userId
       })
     }),
     deleteUser: builder.mutation<IUser, string>({
@@ -120,6 +143,25 @@ export const api = createApi({
         credentials: "include"
       })
     }),
+
+    //chat
+    createChat: builder.mutation<IChat, IChat>({
+      query: (data) => ({
+        url: `/chat/createChat`,
+        method: 'POST',
+        body: data,
+        credentials: "include"
+      })
+    }),
+    getChat: builder.mutation<IChat[], IChat>({
+      query: (data) => ({
+        url: `/chat/getChat`,
+        method: 'POST',
+        body: data,
+        credentials: "include"
+      })
+    }), 
+    
   }),
 })
 
@@ -129,6 +171,8 @@ export const {useRegisterMutation,
   useLogoutMutation , 
   useGetUserDataMutation, 
   useGetUsersMutation,
+  useGetAllUsersMutation,
+  useGetAdminIdMutation,
   useDeleteUserMutation,
   useDisableUserMutation,
   useVerifyEmailMutation,
@@ -137,5 +181,7 @@ export const {useRegisterMutation,
   useInviteSetPasswordMutation,
   useReInviteMutation,
   useGetPendingUsersMutation,
+  useCreateChatMutation,
+  useGetChatMutation,
   } = api
 // export const { useGetTodoQuery, useGetToDoByIdQuery, useLazyGetToDoByIdQuery, useGetToDosQuery, useCreateTodoMutation } = api

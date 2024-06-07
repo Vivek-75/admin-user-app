@@ -14,14 +14,14 @@ export default function Admin () {
           display='flex'
           flexDirection='column'
           justifyContent='center'
-          // border='1px solid black'
-          width='20rem'
+          width='15rem'
           m='2rem auto'
         >
           <Box
             m='1rem auto'
+            width='100%'
           >
-            <Button variant="outlined" onClick={() => navigate('/invite')}>
+            <Button fullWidth variant="outlined" onClick={() => navigate('/invite')}>
               <Typography variant='h6' >
                 Send Invitation
               </Typography>
@@ -29,15 +29,27 @@ export default function Admin () {
           </Box>
           <Box
             m='1rem auto'
+            width='100%'
           >
-            <Button variant="contained" onClick={() => {navigate('/users')}}>
+            <Button fullWidth variant="contained" onClick={() => {navigate('/users')}}>
               <Typography variant='h6'>
-                Chcek Users
+                Check Users
               </Typography>
             </Button>
           </Box>  
+          <Box
+            m='1rem auto'
+            width='100%'
+            >
+            <Button fullWidth variant="contained" onClick={() => {navigate('/chat')}}>
+              <Typography variant='h6'>
+                Chat with user
+              </Typography>
+            </Button>
+          </Box>        
         </Box>
       </Box>
+      
     </>
   )
 }
