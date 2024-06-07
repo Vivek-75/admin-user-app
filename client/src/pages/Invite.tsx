@@ -69,7 +69,7 @@ export default function Invite() {
         >
           <Box bgcolor='#FFF7FC' p='.5rem' borderRadius='1rem'>
             <Typography variant='h5' textAlign='center'>
-              Users {data.length === 0 && 'not found'}
+              Pending users {data.length === 0 && 'not found'}
             </Typography>
             {data?.map((user) => (
               <InviteWidget

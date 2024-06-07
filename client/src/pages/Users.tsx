@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Typography, Box } from "@mui/material"
+import { Button, Typography, Box } from "@mui/material"
 import UserWidget from "../components/UserWidget"
 import { useGetUsersMutation } from "../services/api"
 import { IUser } from "../interface"
@@ -11,22 +11,37 @@ export default function Users() {
   const [data, setData] = useState<IUser[]>([])
   const [getUsers] = useGetUsersMutation()
   const [reload, setReload] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(0)
+  const [disableRightArrow, setDisableRightArrow] = useState<boolean>(false)
 
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (cpage: number) => {
     try {
-      const { data, error } = await getUsers(adminId)
+      const { data, error } = await getUsers({adminId, page: cpage})
+      console.log(data, error, cpage);
       if (error)
         throw new Error()
-      setData(data)
+      
+      setData(data.user)
+      setDisableRightArrow(!data.moreUser)
     }
     catch {
       console.log('Error in getUsers');
     }
   }
 
+  const handleLeftArrow = () => {
+    setPage(prev => prev - 1)
+    fetchUsers(page-1)
+  }
+
+  const handleRightArrow = () => {
+    setPage(prev => prev + 1)
+    fetchUsers(page+1)
+  }
+
   useEffect(() => {
-    fetchUsers()
+    fetchUsers(0)
   }, [reload])
 
   if (data === undefined)
@@ -60,6 +75,12 @@ export default function Users() {
                 setReload={setReload}
               />
             ))}
+            <Box
+              textAlign='center'
+            >
+              <Button onClick={() => handleLeftArrow()} disabled={page === 0}>&lt;</Button>
+              <Button onClick={() => handleRightArrow()} disabled={disableRightArrow}>&gt;</Button>
+            </Box>
           </Box>
         </Box>
       </Box>

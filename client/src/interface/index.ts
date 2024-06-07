@@ -16,6 +16,11 @@ export interface IUser {
   __v?: number;
 }
 
+export interface IGetUser{
+  user: IUser[]
+  moreUser: boolean
+}
+
 export interface IUserWidget {
   _id: string,
   name: string,
