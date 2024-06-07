@@ -9,12 +9,17 @@ dotenv.config()
 
 
 export const getUsers = async (req: Request, res: Response) => {
+  const userPerPage = 3;
   try{
     const {adminId} = req.params
+    const {page} = req.query
     console.log('getuesrs', adminId);
     
-    const user = await User.find({adminId: adminId}).select('-password')
-    res.status(200).send(user)
+    const user = await User.find({adminId: adminId}).limit(userPerPage).skip(userPerPage * Number(page)).select('-password')  
+    const moreUsers = await User.find({adminId: adminId}).limit(1).skip(userPerPage * (Number(page) + 1))
+    if(moreUsers.length)
+      res.status(200).send({user, moreUser: true});
+    res.status(200).send({user, moreUser: false});
   }
   catch{
     (err:unknown) => {
