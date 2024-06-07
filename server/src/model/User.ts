@@ -15,11 +15,15 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  adminId: {
+    type: String,
+    required: true
+  },
+  isAdmin: {
     type: Boolean,
     default: false
   }
@@ -27,4 +31,3 @@ const userSchema = new mongoose.Schema<IUser>({
 
 const User = mongoose.model<IUser>('User', userSchema);
 export default User;
-// export const User = mongoose.model<IUser>('User', userSchema); 

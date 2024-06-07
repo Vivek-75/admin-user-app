@@ -10,9 +10,10 @@ dotenv.config()
 
 export const getUsers = async (req: Request, res: Response) => {
   try{
-    console.log('getuesrs');
+    const {adminId} = req.params
+    console.log('getuesrs', adminId);
     
-    const user = await User.find({isAdmin: false}).select('-password')
+    const user = await User.find({adminId: adminId}).select('-password')
     res.status(200).send(user)
   }
   catch{
@@ -33,9 +34,6 @@ export const verifyEmail = async (req: Request, res: Response) => {
     
     if(!user)
       return res.status(404).json({message: 'user not found'})
-
-    // const salt = await bcrypt.genSalt()
-    // const hashedPassword = await bcrypt.hash(email, salt)
 
     if(typeof process.env.JWT_SECRET !== 'string') return res.status(400).json({message: 'jwt secret type error'})
     const resetToken = jwt.sign({ email: email }, process.env.JWT_SECRET)

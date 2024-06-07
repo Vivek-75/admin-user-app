@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IUser } from '../interface';
+import { IGetUser, IUser } from '../interface';
 
 const backendUrl = 'http://localhost:8080';
 
@@ -11,6 +11,11 @@ interface IResetPassword {
   resetToken?: string,
   invitationToken?: string,
   password: string
+}
+
+interface IPage {
+  adminId: string
+  page: number
 }
 
 export const api = createApi({
@@ -50,9 +55,9 @@ export const api = createApi({
     }),
     
     //application
-    getUsers: builder.mutation<IUser[], void>({
-      query: () => ({
-        url: '/user/all',
+    getUsers: builder.mutation<IGetUser, IPage>({
+      query: ({adminId, page}) => ({
+        url: `/user/${adminId}?page=${page}`,
         credentials: "include"
       })
     }),
@@ -108,8 +113,13 @@ export const api = createApi({
         method: 'POST',
         credentials: "include"
       })
-    })
-
+    }),
+    getPendingUsers: builder.mutation<IUser[], string>({
+      query: (adminId) => ({
+        url: `/admin/pendingusers/${adminId}`,
+        credentials: "include"
+      })
+    }),
   }),
 })
 
@@ -126,5 +136,6 @@ export const {useRegisterMutation,
   useCreateUserAndInviteMutation,
   useInviteSetPasswordMutation,
   useReInviteMutation,
+  useGetPendingUsersMutation,
   } = api
 // export const { useGetTodoQuery, useGetToDoByIdQuery, useLazyGetToDoByIdQuery, useGetToDosQuery, useCreateTodoMutation } = api

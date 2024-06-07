@@ -3,6 +3,8 @@ import { Formik } from "formik";
 import { Box, TextField, Button, useMediaQuery } from "@mui/material";
 import { IUser } from "../interface";
 import { useCreateUserAndInviteMutation } from "../services/api";
+import { useAppSelector } from "../store/store";
+import { Dispatch, SetStateAction } from "react";
 
 
 const formSchema = yup.object().shape({
@@ -16,10 +18,11 @@ const formValue: IUser = {
 }
 
 
-export default function InviteForm() {
+export default function InviteForm({setReload}: {setReload: Dispatch<SetStateAction<boolean>>}) {
 
   const isNonMobile = useMediaQuery("(min-width: 600px)");
   const [createUserAndInvite] = useCreateUserAndInviteMutation()
+  const adminId = useAppSelector(state => state.users._id)
 
 
   const handleFormSubmit = async (values: IUser, onSubmitProps: any) => {
@@ -28,11 +31,13 @@ export default function InviteForm() {
     const sendData = {
       name: values.name,
       email: values.email,
+      adminId: adminId,
     }
     const {data, error} = await createUserAndInvite(sendData)
 
     console.log(data, error);
     onSubmitProps.resetForm()
+    setReload(prev => !prev)
   }
 
 

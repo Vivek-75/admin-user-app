@@ -2,7 +2,6 @@ import { Box, Typography, IconButton, Grid } from "@mui/material"
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import NoAccountsOutlinedIcon from '@mui/icons-material/NoAccountsOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import { useDeleteUserMutation, useDisableUserMutation } from "../services/api";
 import { IUserWidget } from "../interface";
 
@@ -82,9 +81,6 @@ export default function UserWidget(props: IUserWidget) {
                 <NoAccountsOutlinedIcon /> :
                 <AccountCircleOutlinedIcon />
                 }
-              </IconButton>
-              <IconButton>
-                <ReplayOutlinedIcon />
               </IconButton>
             </Box>
           </Grid>
