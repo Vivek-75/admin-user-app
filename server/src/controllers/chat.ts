@@ -14,8 +14,8 @@ export const getChat = async (req: Request, res: Response) => {
 
     const chat = await Chat.find({
       $or: [
-          { senderId: senderId, receiverId: receiverId },
-          { senderId: receiverId, receiverId: senderId }
+          { from: senderId, to: receiverId },
+          { from: receiverId, to: senderId }
       ]
     }).select('senderId receiverId message')
 
@@ -31,23 +31,14 @@ export const getChat = async (req: Request, res: Response) => {
 
 export const createChat = async (req: Request, res: Response) => {
   try{
-    // let {senderId, receiverId} = req.params
     const {senderId, receiverId, text} = req.body
-
-    // if(receiverId === 'myAdmin'){
-    //   const user:IUser | null = await User.findById(senderId)
-    //   if(!user)
-    //     return res.status(404).json({message: 'receiver not found'})
-    //   console.log(user);
-    //   receiverId = user.adminId || ''
-    // }
 
     if(!senderId || !receiverId || !text) 
       return res.status(400).json({message: 'did not get senderId, receiverId and text'})
 
     const chat = new Chat({
-      senderId,
-      receiverId,
+      from: senderId,
+      to: receiverId,
       message: text,
     })
     const savedChat = await chat.save()

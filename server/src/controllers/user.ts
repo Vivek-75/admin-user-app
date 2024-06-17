@@ -56,6 +56,9 @@ export const verifyEmail = async (req: Request, res: Response) => {
     if(!user)
       return res.status(404).json({message: 'user not found'})
 
+    if(user.disabled || user.pending)
+      return res.status(404).json({message: 'user is disabled or pending'})
+
     if(typeof process.env.JWT_SECRET !== 'string') return res.status(400).json({message: 'jwt secret type error'})
     const resetToken = jwt.sign({ email: email }, process.env.JWT_SECRET)
     

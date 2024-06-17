@@ -8,18 +8,22 @@ dotenv.config()
 export const verifyAdmin = (req: Request, res: Response, next: NextFunction)=>{
   try{
     const cookie = req.cookies
-    if(cookie.token === undefined) return res.json({message: "no cookie found"})
-    
-    const token = cookie.token
-    if(typeof process.env.JWT_SECRET !== 'string') return res.status(400).json({message: 'jwt secret required'})
+    if (!cookie.token) 
+      return next(new Error('No cookie found'));
+
+    const token = cookie.token;
+    if (typeof process.env.JWT_SECRET !== 'string') 
+      return next(new Error('JWT secret required'));
     
     const verified = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload
     delete verified.user.password;
     console.log('middleware', verified.user);
     
-    if(!verified) return res.json({message: "invalid token"})
+    if(!verified) 
+      return next(new Error('Invalid token'));
 
-    if(!verified.user.isAdmin) return res.json({message: 'you are not admin'})
+    if(!verified.user.isAdmin) 
+      return next(new Error('You are not admin'));
     
     console.log('you are admin');
 

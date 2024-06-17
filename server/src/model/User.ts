@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: true
+  },
+  pending: {
+    type: Boolean,
+    default: true
   },
   disabled: {
     type: Boolean,

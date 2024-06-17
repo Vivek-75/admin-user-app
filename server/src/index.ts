@@ -36,15 +36,6 @@ app.get('/', (req, res) => {
   res.json({message : "hello"})
 })
 
-// app.get('/nm', async (req, res) => {
-//   try{
-//     await sendEmail()
-//     res.json({message : "hello"})
-//   }
-//   catch(err){
-//     res.status(500).send(err)
-//   }
-// })
 
 app.use('/auth', authRoutes)
 app.post('/verifyAuth', verifyAuth)

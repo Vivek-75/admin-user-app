@@ -3,11 +3,11 @@ import { IChat } from "../interface";
 
 
 const chatSchema = new mongoose.Schema<IChat>({
-  senderId: {
+  from: {
     type: String,
     required: true
   },
-  receiverId: {
+  to: {
     type: String,
     required: true
   },

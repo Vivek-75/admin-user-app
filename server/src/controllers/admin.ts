@@ -1,4 +1,4 @@
-import {Response, Request} from 'express'
+import {Response, Request, response} from 'express'
 import User from '../model/User';
 import { IUser, IInvitedUser } from '../interface';
 import bcrypt from 'bcrypt'
@@ -8,6 +8,7 @@ import { sendEmail } from '../services/nodemailer';
 import PendingUser from '../model/PendingUser';
 
 dotenv.config()
+
 
 
 export const deleteUsers = async (req: Request, res: Response) =>{
@@ -55,20 +56,18 @@ export const createUserAndInvite = async (req: Request, res: Response) =>{
   try{
     const {name, email, adminId}:IInvitedUser = req.body
     
-    const pendingUser = await PendingUser.findOne({email})
-    if(!pendingUser){
-      const newUser = new PendingUser({
-        name,
-        email,
-        adminId,
-      })
-      await newUser.save()
-      console.log('saved user in pending list'); 
-    }
-
-    const user = await User.findOne({email})
-    if(user)  return res.status(409).json({message: 'User already exists'})
+    const pendingUser = await User.findOne({email})
     
+    if(pendingUser)  return res.status(409).json({message: 'User already exists'})
+    
+    const newUser = new User({
+      name,
+      email,
+      adminId,
+    })
+    await newUser.save()
+    console.log('saved user in pending list'); 
+
     
     if(typeof process.env.JWT_SECRET !== 'string') return res.status(400).json({message: 'jwt secret type error'})
     const invitationToken = jwt.sign({ name: name, email: email, adminId: adminId }, process.env.JWT_SECRET)
@@ -108,16 +107,15 @@ export const invitaionSetPassword = async (req: Request, res: Response) => {
 
     const salt = await bcrypt.genSalt()
     const hashedPassword = await bcrypt.hash(password, salt)
-    const newUser = new User ({
-      name: verified.name,
-      email: verified.email,
-      adminId: verified.adminId,
-      password: hashedPassword,
-    })
-    const savedUser = await newUser.save()
-    console.log(savedUser);
+    const {email} = verified
+    const user = await User.findOne({email})
+    if(!user) return res.status(403).json({message: 'User not found'})
 
-    const pendingUser = await PendingUser.findOneAndDelete({email: savedUser.email})
+    user.password= hashedPassword;
+    user.pending = false;
+
+    const savedUser = await user.save()
+    console.log(savedUser);
 
     res.clearCookie('invitationToken')
     
@@ -136,9 +134,9 @@ export const sendInvitation = async (req: Request, res: Response) => {
   try{
     const {userId} = req.params
 
-    const user = await PendingUser.findOne({ _id: userId })
-    if(!user)
-      return res.status(404).json({message: 'user not found'})
+    const user = await User.findOne({ _id: userId })
+    if(!user?.pending)
+      return res.status(404).json({message: 'Pending user not found'})
 
     if(typeof process.env.JWT_SECRET !== 'string') 
       return res.status(400).json({message: 'jwt secret type error'})
@@ -167,7 +165,7 @@ export const getPendingUsers = async (req: Request, res: Response) => {
     const {adminId} = req.params
     console.log('getpendinguesrs', adminId);
     
-    const user = await PendingUser.find({adminId: adminId}).select('-password')
+    const user = await User.find({adminId: adminId, pending: true}).select('-password')
     if(!user)
       return res.status(404).json({message: 'no pending user found'})
     res.status(200).send(user)

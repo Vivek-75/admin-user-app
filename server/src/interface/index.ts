@@ -1,22 +1,25 @@
-
-export interface IUser {
-  _id?: string,
-  name?: string,
-  email: string,
-  password: string,
-  disabled?: boolean,
-  adminId?: string,
-  isAdmin?: boolean,
-  __v?: number,
+export interface BaseSchema {
+  _id: string;
+  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface IAdmin {
-  _id?: string,
+export interface IUser extends IAdmin{
+  // name?: string,
+  // email: string,
+  // password: string,
+  pending?: boolean,
+  disabled?: boolean,
+  adminId?: string,
+  // isAdmin?: boolean,
+}
+
+export interface IAdmin extends BaseSchema{
   name?: string,
   email: string,
   password: string,
   isAdmin?: boolean,
-  __v?: number,
 }
 
 export interface IPendingUser {
@@ -33,12 +36,8 @@ export interface IInvitedUser {
   adminId: string
 }
 
-export interface IChat {
-  _id?: string,
-  __v?: number,
-  senderId: string,
-  receiverId: string,
-  message: string,
-  createdAt: string,
-  updatedAt: string,
+export interface IChat extends BaseSchema {
+  from: string,
+  to: string,
+  message: string
 }

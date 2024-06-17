@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import User from '../model/User';
-import { IUser } from '../interface';
+import { IAdmin, IUser } from '../interface';
 import Admin from '../model/Admin';
 
 dotenv.config()
@@ -54,9 +54,17 @@ export async function login (req: Request, res: Response){
   try{
     const {email, password, isAdmin}: IUser = req.body
     console.log('login');
-    const user = await (isAdmin ? Admin.findOne({email}) : User.findOne({email}))
+    let user: IUser | IAdmin | null;
+    // let user
+    if(isAdmin){
+      user = await Admin.findOne({email});
+    }
+    else{
+      user = await User.findOne({email})
+    }
     if(!user) return res.status(404).json({message: 'user not found'})
-    
+    if(!isAdmin && user.disabled) return res.status(403).json({message: 'user is disabled'})
+      
     if(user.password){
       const isMatch = await bcrypt.compare(password, user.password)
       if(!isMatch) return res.status(401).json({message: 'incorrect password'})
