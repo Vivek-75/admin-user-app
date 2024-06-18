@@ -14,13 +14,13 @@ export const getChat = async (req: Request, res: Response) => {
 
     const chat = await Chat.find({
       $or: [
-          { from: senderId, to: receiverId },
-          { from: receiverId, to: senderId }
+        { from: senderId, to: receiverId },
+        { from: receiverId, to: senderId }
       ]
-    }).select('senderId receiverId message')
+    }).select('from to message')
 
     console.log(chat);
-    res.status(200).send(chat)
+    res.status(200).json(chat)
   }
   catch(err){
     console.log(err);
@@ -43,7 +43,7 @@ export const createChat = async (req: Request, res: Response) => {
     })
     const savedChat = await chat.save()
 
-    res.status(200).send(savedChat)
+    res.status(200).json(savedChat)
   }
   catch(err){
     console.log(err);

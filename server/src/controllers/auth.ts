@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt, {JwtPayload} from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import User from '../model/User';
 import { IAdmin, IUser } from '../interface';
@@ -104,3 +104,41 @@ export const logout = (req: Request, res: Response)=>{
     }
   }
 }
+
+
+export const verifyAuth = async (req: Request, res: Response)=>{
+  try{
+    const cookie = req.cookies
+    if(cookie.token === undefined) return res.json({message: "no cookie found", auth: false})
+    
+    const token = cookie.token
+    if(typeof process.env.JWT_SECRET !== 'string') return res.status(400).json({message: 'jwt secret required', auth: false})
+    
+    const verified = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload
+    delete verified.user.password;
+    console.log('middleware', verified.user);
+
+    if(!verified.user.isAdmin){
+      const checkUser = await User.findById(verified.user._id)
+      if(!checkUser){
+        return res.json({message: "user deleted or disabled", auth: false})
+      }
+    }
+    
+    if(!verified) return res.json({message: "invalid token", auth: false})
+    const user = {
+      _id: verified.user._id,
+      name: verified.user.name,
+      email: verified.user.email,
+      isAdmin: verified.user.isAdmin
+    }
+    
+    res.status(200).json(user)
+  }
+  catch{
+    (err: unknown) => {
+      console.log(err);
+      res.status(500).json({message: err, auth: false})
+    }
+  }
+} 

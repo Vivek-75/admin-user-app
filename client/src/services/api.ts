@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IGetUser, IUser } from '../interface';
+import { IUser } from '../interface';
 
 const backendUrl = 'http://localhost:8080';
 
@@ -13,19 +13,27 @@ interface IResetPassword {
   password: string
 }
 
-interface IPage {
-  adminId: string
-  page: number
-}
-
 interface IUserId {
   userId: string
 }
 
+interface IVerifyError {
+  message: string,
+  auth: boolean
+}
+
 export interface IChat {
+  _id? : string,
   senderId: string,
   receiverId: string,
   text?: string
+}
+
+export interface IDBChat {
+  _id? : string,
+  from : string,
+  to: string,
+  message: string
 }
 
 export const api = createApi({
@@ -56,18 +64,25 @@ export const api = createApi({
         credentials: "include"
       })
     }),
-    getUserData: builder.mutation<UserId, void>({
+    getUserData: builder.mutation<UserId | IVerifyError, void>({
       query: () => ({
-        url: `/verifyAuth`,
+        url: `/auth/verifyAuth`,
         method: 'POST',
         credentials: "include"
       })
     }),
     
     //application
-    getUsers: builder.mutation<IGetUser, IPage>({
-      query: ({adminId, page}) => ({
-        url: `/user/${adminId}?page=${page}`,
+    getUserById: builder.mutation<string, string>({
+      query: (id) => ({
+        url: `/user/single/${id}`,
+        method: 'POST',
+        credentials: "include"
+      })
+    }),
+    getUsers: builder.mutation<IUser[], string>({
+      query: (adminId) => ({
+        url: `/user/${adminId}`,
         credentials: "include"
       })
     }),
@@ -145,7 +160,7 @@ export const api = createApi({
     }),
 
     //chat
-    createChat: builder.mutation<IChat, IChat>({
+    createChat: builder.mutation<IDBChat, IChat>({
       query: (data) => ({
         url: `/chat/createChat`,
         method: 'POST',
@@ -153,7 +168,7 @@ export const api = createApi({
         credentials: "include"
       })
     }),
-    getChat: builder.mutation<IChat[], IChat>({
+    getChat: builder.mutation<IDBChat[], IChat>({
       query: (data) => ({
         url: `/chat/getChat`,
         method: 'POST',
@@ -166,9 +181,11 @@ export const api = createApi({
 })
 
 
-export const {useRegisterMutation,
+export const {
+  useRegisterMutation,
   useLoginMutation, 
   useLogoutMutation , 
+  useGetUserByIdMutation,
   useGetUserDataMutation, 
   useGetUsersMutation,
   useGetAllUsersMutation,

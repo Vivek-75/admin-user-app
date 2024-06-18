@@ -15,6 +15,7 @@ import Users from './pages/Users'
 import InviteSetPassword from './pages/InviteSetPassword'
 import AdminChatList from './pages/AdminChatList'
 import ChatPage from './pages/ChatPage'
+import Chat from './pages/Chat'
 
 
 function App() {
@@ -30,11 +31,19 @@ function App() {
       const {data, error} = await getUserData()
       if(error)
         throw new Error()
-      dispatch(setUser(data))
-      // console.log(data, error);
+      console.log(data, error);
+      
+      if(data.auth != undefined && !data.auth){
+        localStorage.removeItem('userId')
+        console.log('logged out');     
+        return 
+      }
+      else
+        dispatch(setUser(data))
+      
     }
     catch{
-      console.log('Error in getUserData');
+      console.log('User is not logged in');
     }
   }
   
@@ -54,13 +63,13 @@ function App() {
         <Route path='/login' element={isAuth ? <Navigate to='/' /> : <Login />} />
         <Route path='/' element={isAuth ? <Home /> : <Navigate to='/login' /> } />
         <Route path='/invite' element={isAuth && isAdmin ? <Invite /> : <Navigate to='/login' />} />
-        <Route path='/users' element={isAuth && isAdmin ? <Users /> : <Navigate to='/login' />} />
+        {/* <Route path='/users' element={isAuth && isAdmin ? <Users /> : <Navigate to='/login' />} /> */}
         <Route path='/forgotpassword' element={<ForgetPassword />} />
         <Route path='/forgotpassword/:id' element={<NewPassword />} />
         <Route path='/resetpassword/:id' element={<NewPassword />} />
         <Route path='/invite/setpassword/:id' element={<InviteSetPassword />} />
-        <Route path='/chat' element={isAdmin ? <AdminChatList /> : <Navigate to='/' /> } />
-        <Route path='/chat/:id' element={isAuth ? <ChatPage /> : <Navigate to='/' /> } />
+        {/* <Route path='/chat' element={isAdmin ? <AdminChatList /> : <Navigate to='/' /> } /> */}
+        <Route path='/chat/:id' element={isAuth ? <Chat /> : <Navigate to='/' /> } />
 
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>

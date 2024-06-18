@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
+
 export interface User {
   name: string,
   password?: string,
@@ -12,13 +13,9 @@ export interface IUser {
   password? : string;
   isAdmin?: boolean;
   adminId?: string;
+  pending?: boolean;
   disabled?: boolean;
   __v?: number;
-}
-
-export interface IGetUser{
-  user: IUser[]
-  moreUser: boolean
 }
 
 export interface IUserWidget {
@@ -28,4 +25,13 @@ export interface IUserWidget {
   disabled?: boolean,
   // reload?: boolean,
   setReload?: Dispatch<SetStateAction<boolean>>
+}
+
+
+export interface IRows {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  disabled: string;
 }

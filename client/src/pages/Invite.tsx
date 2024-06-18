@@ -48,39 +48,18 @@ export default function Invite() {
         justifyContent='center'
         m='1rem auto'
       >
-
         <Box
           m='1rem auto'
-          border='1px solid #999'
-          borderRadius='1rem'
+          borderRadius='2rem'
           p='1rem'
           pb='0'
+          boxShadow='12px 12px 16px 0 rgba(0, 0, 0, 0.2), -8px -8px 12px 0 rgba(255, 255, 255, 1.3)'            
+          bgcolor='#f2f2f2'
         >
           <Typography textAlign='center' variant="h5">Send invitation</Typography>
           <InviteForm setReload={setReload}/>
         </Box>
 
-        <Box
-          m='2rem auto'
-          // border='1px solid #999'
-          borderRadius='1rem'
-          // p='1rem'
-          pb='0'
-        >
-          <Box bgcolor='#FFF7FC' p='.5rem' borderRadius='1rem'>
-            <Typography variant='h5' textAlign='center'>
-              Pending users {data.length === 0 && 'not found'}
-            </Typography>
-            {data?.map((user) => (
-              <InviteWidget
-                key={user._id}
-                _id={user._id || 'id'}
-                name={user.name || 'error in name props'}
-                email={user.email}
-              />
-            ))}
-          </Box>
-        </Box>
       </Box>
     </>
   )

@@ -4,8 +4,34 @@ import bcrypt from 'bcrypt'
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { sendEmail } from "../services/nodemailer";
 import dotenv from 'dotenv'
+import Admin from "../model/Admin";
 
 dotenv.config()
+
+
+export const getUserById = async (req: Request, res: Response) => {
+  try{
+    const {id} = req.params
+    console.log('getuesrbyid', id);
+    
+    const user = await User.findById(id).select('-password')
+    if(!user){
+      const admin = await Admin.findById(id).select('-password')
+      if(!admin)
+        return res.status(404).json('user not found')
+      
+      return res.status(200).json(admin.name)
+    }
+    console.log('getuserbyid', user)
+    res.status(200).json(user.name)
+  }
+  catch{
+    (err:unknown) => {
+      console.log(err)
+      res.status(500).send('error in fetching user')
+    }
+  }
+}
 
 
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -14,6 +40,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
     console.log('getuesrs', adminId);
     
     const user = await User.find({adminId: adminId}).select('-password')
+    if(!user)
+      return res.status(403).send('user not found')
+    
     res.status(200).send(user)
   }
   catch{
@@ -25,17 +54,16 @@ export const getAllUsers = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const userPerPage = 3;
   try{
     const {adminId} = req.params
-    const {page} = req.query
     console.log('getuesrs', adminId);
+    const user = await User.find({adminId: adminId}).select('-password')
+    if(!user)
+      return res.status(404).send('User not found')
     
-    const user = await User.find({adminId: adminId}).limit(userPerPage).skip(userPerPage * Number(page)).select('-password')  
-    const moreUsers = await User.find({adminId: adminId}).limit(1).skip(userPerPage * (Number(page) + 1))
-    if(moreUsers.length)
-      res.status(200).send({user, moreUser: true});
-    res.status(200).send({user, moreUser: false});
+    console.log(user);
+    
+    res.status(200).send(user);
   }
   catch{
     (err:unknown) => {

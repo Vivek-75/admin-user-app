@@ -8,11 +8,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useLogoutMutation } from '../services/api';
 import { useAppDispatch } from '../store/store';
 import { resetUser } from '../store/slices/userSlice';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function ButtonAppBar() {
 
   const [logout] = useLogoutMutation()
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     try{
@@ -37,8 +41,9 @@ export default function ButtonAppBar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={() => navigate(-1)}
           >
-            <MenuIcon />
+            <ArrowBackIcon /> 
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Dashboard

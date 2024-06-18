@@ -5,16 +5,6 @@ export interface BaseSchema {
   updatedAt?: string;
 }
 
-export interface IUser extends IAdmin{
-  // name?: string,
-  // email: string,
-  // password: string,
-  pending?: boolean,
-  disabled?: boolean,
-  adminId?: string,
-  // isAdmin?: boolean,
-}
-
 export interface IAdmin extends BaseSchema{
   name?: string,
   email: string,
@@ -22,12 +12,16 @@ export interface IAdmin extends BaseSchema{
   isAdmin?: boolean,
 }
 
-export interface IPendingUser {
-  _id?: string,
+export interface IUser extends IAdmin{
+  pending?: boolean,
+  disabled?: boolean,
+  adminId?: string,
+}
+
+export interface IPendingUser extends BaseSchema{
   name: string,
   email: string,
   adminId?: string
-  __v?: number,
 }
 
 export interface IInvitedUser {

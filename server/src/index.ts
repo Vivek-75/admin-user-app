@@ -38,7 +38,6 @@ app.get('/', (req, res) => {
 
 
 app.use('/auth', authRoutes)
-app.post('/verifyAuth', verifyAuth)
 app.use('/admin', adminRoutes)
 app.use('/user', userRoutes)
 app.use('/chat', chatRoutes)
