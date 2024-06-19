@@ -101,19 +101,27 @@ export default function UserList() {
           gap='.2rem'
         >
           <Tooltip title="Delete">
-            <IconButton
-              onClick={() => handleDelete(params.row)}
-            >
-              <DeleteOutlineOutlinedIcon />            
-            </IconButton>
+            <span>
+              <IconButton
+                onClick={() => handleDelete(params.row)}
+                disabled={params.row.status === 'Pending'}
+                >
+                <DeleteOutlineOutlinedIcon />            
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Disable">
-              <IconButton onClick={() => {params.row.disabled === 'Enable'  && handleDisable(params.row)}}>
+            <span>
+              <IconButton 
+                onClick={() => {params.row.disabled === 'Enable'  && handleDisable(params.row)}} 
+                disabled={params.row.status === 'Pending'}
+                >
                 {params.row.disabled === 'Disabled'  ? 
                 <NoAccountsOutlinedIcon /> :
                 <AccountCircleOutlinedIcon />
-                }
+              }
               </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title="Invite">
             <span>
