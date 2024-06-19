@@ -104,8 +104,8 @@ export default function UserList() {
             <span>
               <IconButton
                 onClick={() => handleDelete(params.row)}
-                disabled={params.row.status === 'Pending'}
-                >
+                // disabled={params.row.status === 'Pending'}
+              >
                 <DeleteOutlineOutlinedIcon />            
               </IconButton>
             </span>
@@ -114,8 +114,8 @@ export default function UserList() {
             <span>
               <IconButton 
                 onClick={() => {params.row.disabled === 'Enable'  && handleDisable(params.row)}} 
-                disabled={params.row.status === 'Pending'}
-                >
+                // disabled={params.row.status === 'Pending'}
+              >
                 {params.row.disabled === 'Disabled'  ? 
                 <NoAccountsOutlinedIcon /> :
                 <AccountCircleOutlinedIcon />

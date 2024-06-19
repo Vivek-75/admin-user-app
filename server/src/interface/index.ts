@@ -35,3 +35,7 @@ export interface IChat extends BaseSchema {
   to: string,
   message: string
 }
+
+export interface IUserSocketMap {
+  [key: string]: string;
+};

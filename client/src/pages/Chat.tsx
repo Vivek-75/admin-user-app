@@ -19,9 +19,7 @@ export default function Chat() {
       >
         <Box
           m='0rem auto'
-          // borderRadius='1rem'
           width={matches ? '40rem' : '95%'}
-          // border='1px solid black'
         >
           <ChatHeader />
           <Chats />

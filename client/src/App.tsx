@@ -11,10 +11,7 @@ import { CssBaseline } from '@mui/material'
 import NewPassword from './pages/newPassword/NewPassword'
 import ForgetPassword from './pages/newPassword/ForgetPassword'
 import Invite from './pages/Invite'
-import Users from './pages/Users'
 import InviteSetPassword from './pages/InviteSetPassword'
-import AdminChatList from './pages/AdminChatList'
-import ChatPage from './pages/ChatPage'
 import Chat from './pages/Chat'
 
 

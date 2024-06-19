@@ -1,25 +1,30 @@
 import { Box, IconButton, TextField, Typography } from "@mui/material"
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { IDBChat, useCreateChatMutation, useGetChatMutation } from "../services/api";
-
+import { Socket, io } from "socket.io-client";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 
 
 export default function Chats() {
 
-  const {id: receiverId} = useParams()
-  const senderId = useAppSelector(state =>  state.users._id)
+  const authId = (localStorage.getItem('userId'))
+  const { id: receiverId } = useParams()
+  const senderId = useAppSelector(state => state.users._id)
   const [createChat] = useCreateChatMutation()
   const [getChat] = useGetChatMutation()
   const [text, setText] = useState<string>('')
   const [messages, setMessages] = useState<IDBChat[]>()
+  const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
 
-  const sendText = async () =>{
-    try{
-      if(text == '')
+  const sendText = async () => {
+    console.log('send Text');
+    
+    try {
+      if (text == '')
         return;
 
       const sendData = {
@@ -27,18 +32,26 @@ export default function Chats() {
         receiverId: receiverId || '',
         text: text,
       }
+
       const { data, error } = await createChat(sendData)
       console.log(data, error);
-      
+
       setText('')
+      const DBdata = {
+        _id: String(Math.floor(Math.random() * 1000000)),
+        from: senderId,
+        to: receiverId || '',
+        message: text,
+      }
+      setMessages(prev => [...prev, DBdata])
     }
-    catch{
+    catch {
       console.log('Error in sendText');
     }
   }
-  
+
   const fetchChats = async () => {
-    try{
+    try {
       const sendData = {
         senderId: senderId,
         receiverId: receiverId || '',
@@ -47,70 +60,70 @@ export default function Chats() {
       console.log(data, error);
       setMessages(data)
     }
-    catch{
+    catch {
       console.log('Error in fetchChats');
     }
   }
 
-  useEffect(()=>{
+  const newMessage = (data: IDBChat) => {
+    console.log('newmessage', data);
+    setMessages(prev => [...prev, data])
+  }
+
+  useEffect(() => {
     fetchChats()
   }, [])
 
-  if(messages === undefined)
-    return <h1>loading...</h1>
 
-  console.log('m', messages);
+  useEffect(() => {
+    const newSocket = io('http://localhost:8080', {
+      query: {
+        userId: authId
+      },
+    });
 
+    setSocket(newSocket)
+    
+    newSocket.on('connect', () => {
+      console.log('connected', newSocket.id);
+    })
 
+    newSocket.on('newMessage', data => {
+      console.log('data', data);
+      const text:IDBChat = {
+        _id: data._id,
+        from: data.from,
+        to: data.to,
+        message: data.message
+      }
+      newMessage(text)
+    })
+
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+    };
+  }, [])  
+
+  
 
   return (
     <>
       <Box>
-      <Box
+        <Box
           border='1px solid black'
           height='400px'
           display='flex'
           flexDirection='column'
           bgcolor='#f2f2f2'
           borderRadius='0 0 1rem 1rem '
-        >
+          >
           <Box
             height='100%'
-            overflow-y='scroll'
+            sx={{overflowY: 'scroll'}}
           >
-            {/* <Box
-              display='flex'
-              m='.2rem .5rem'
-              justifyContent='flex-start'
-            >
-              <Typography
-                bgcolor='#8DECB4'
-                p='.5rem'
-                borderRadius='.8rem .8rem .8rem 0rem'
-              >
-                hiiiiiiiiiiiiiiiii
-              </Typography>
-            </Box>
-
-            <Box
-              display='flex'
-              m='.2rem .5rem'
-              justifyContent='flex-end'
-            >
-              <Typography
-                bgcolor='#8DECB4'
-                p='.5rem'
-                borderRadius='.8rem .8rem 0rem .8rem'
-              >
-                hiiiiiiiiiiiiiiiii
-              </Typography>
-            </Box> */}
-
-
             {messages?.map((data) => (
-              // <Typography key={data._id} textAlign={data.receiverId == receiverId ? 'left' : 'right'}>
-              //   {data.message}
-              // </Typography> 
               <Box
                 key={data._id}
                 display='flex'
@@ -149,7 +162,7 @@ export default function Chats() {
             <IconButton
               onClick={() => sendText()}
             >
-              <SendOutlinedIcon style={{fill: "green"}} />
+              <SendOutlinedIcon style={{ fill: "green" }} />
             </IconButton>
           </Box>
         </Box>

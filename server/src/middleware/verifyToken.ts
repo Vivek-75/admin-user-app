@@ -25,7 +25,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
         return next(new Error('user disabled or deleted'))
       }
     }
-
+    
     if(!verified) 
       return next(new Error("invalid token"))
     
