@@ -52,19 +52,25 @@ export const register = async (req: Request, res: Response) => {
 
 export async function login (req: Request, res: Response){
   try{
-    const {email, password, isAdmin}: IUser = req.body
+    let {email, password, isAdmin}: IUser = req.body
     console.log('login');
     let user: IUser | IAdmin | null;
-    // let user
-    if(isAdmin){
-      user = await Admin.findOne({email});
+    
+    const admin = await Admin.findOne({email});
+    if(!admin){
+      const anyUser = await User.findOne({email})
+      if(!anyUser) 
+        return res.status(404).json({message: 'user not found'})
+      if(anyUser.disabled) 
+        return res.status(403).json({message: 'user is disabled'})
+      
+      user = anyUser
+      isAdmin = false
     }
     else{
-      user = await User.findOne({email})
+      user = admin
     }
-    if(!user) return res.status(404).json({message: 'user not found'})
-    if(!isAdmin && user.disabled) return res.status(403).json({message: 'user is disabled'})
-      
+    
     if(user.password){
       const isMatch = await bcrypt.compare(password, user.password)
       if(!isMatch) return res.status(401).json({message: 'incorrect password'})

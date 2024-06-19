@@ -164,8 +164,6 @@ export default function Form() {
                 helperText={touched.password && errors.password}
                 sx={{ gridColumn: "span 4" }}
               />
-
-              <FormControlLabel onChange={() => {values.isAdmin = !values.isAdmin}} control={<Checkbox defaultChecked/>} label="Admin" />
             </Box>
 
             {/* BUTTON */}
@@ -188,7 +186,7 @@ export default function Form() {
                 }}
                 sx={{
                   textDecoration: "underline",
-                  fontSize: '.7rem',
+                  fontSize: '.8rem',
                   cursor: 'pointer'
                 }}
               >
@@ -203,7 +201,7 @@ export default function Form() {
                 }}
                 sx={{
                   textDecoration: "underline",
-                  fontSize: '.7rem',
+                  fontSize: '.8rem',
                   color: 'blue',
                   cursor: 'pointer'
                 }}
