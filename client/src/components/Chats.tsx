@@ -106,6 +106,15 @@ export default function Chats() {
     };
   }, [])  
 
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages]);
   
 
   return (
@@ -137,6 +146,7 @@ export default function Chats() {
                 >
                   {data.message}
                 </Typography>
+                <div ref={messagesEndRef} />
               </Box>
             ))}
           </Box>
@@ -155,6 +165,7 @@ export default function Chats() {
               id="outlined-hidden-label-small"
               variant="outlined"
               size="small"
+              placeholder="Send message..."
               value={text}
               onChange={e => setText(e.target.value)}
               fullWidth
